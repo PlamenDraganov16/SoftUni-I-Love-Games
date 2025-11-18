@@ -10,13 +10,14 @@ export default function Home() {
             .then(result => {
 
                 const resultGames = Object.values(result)
-                    .sort((a,b) => b._createdOn - a._createdOn)
-                    .slice(0,3);
+                    .sort((a, b) => b._createdOn - a._createdOn)
+                    .slice(0, 3);
 
                 setLatestGames(resultGames);
             })
+            .catch(err => alert(err.message));
     }, [])
-    
+
     return (
         <section id="welcome-world">
             <div className="welcome-message">
@@ -31,8 +32,8 @@ export default function Home() {
                     <div className="home-container">
 
                         {latestGames.length === 0 && <p class="no-articles">No games yet</p>}
-                        
-                        {latestGames.map(game => <Game key={game._id} {...game}/>)}
+
+                        {latestGames.map(game => <Game key={game._id} {...game} />)}
                     </div>
                 </div>
             </div>
