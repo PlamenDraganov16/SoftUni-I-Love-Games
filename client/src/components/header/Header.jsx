@@ -8,7 +8,7 @@ export default function Header() {
                 <Link className="home" to="/">
                     <img src="./images/logo.png" alt="logo" />
                 </Link>
-                <Link to="/catalog">Catalog</Link>
+                <Link to="/games">Catalog</Link>
                 {/* Logged-in users */}
                 <div id="user">
                     <Link to="/create">Add Game</Link>
@@ -16,8 +16,8 @@ export default function Header() {
                 </div>
                 {/* Guest users */}
                 <div id="guest">
-                    <Link href="/login">Login</Link>
-                    <Link href="/register">Register</Link>
+                    <Link to="/login">Login</Link>
+                    <Link to="/register">Register</Link>
                 </div>
             </nav>
         </header>
