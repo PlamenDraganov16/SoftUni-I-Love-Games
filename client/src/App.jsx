@@ -5,6 +5,7 @@ import Home from "./components/home/Home.jsx"
 import Catalog from "./components/catalog/Catalog.jsx"
 import Details from "./components/details/Details.jsx"
 import Create from "./components/create/Create.jsx"
+import Register from "./components/register/Register.jsx"
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
                 <Route path="/games" element={<Catalog />} />
                 <Route path="/games/create" element={<Create />} />
                 <Route path="/games/:gameId/details" element={<Details />} />
+                <Route path="/register" element={<Register />} />
             </Routes>
 
             <Footer />
