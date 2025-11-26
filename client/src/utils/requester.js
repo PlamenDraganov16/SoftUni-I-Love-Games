@@ -13,7 +13,7 @@ export default async function request(url, method, data) {
         options.body = JSON.stringify(data);
     }
 
-    const response = await fetch(url);
+    const response = await fetch(url, options);
 
     if (!response.ok) {
         throw response.statusText;;
