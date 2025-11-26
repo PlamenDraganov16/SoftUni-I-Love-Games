@@ -10,12 +10,26 @@ import { useState } from "react"
 import Login from "./components/login/Login.jsx"
 
 function App() {
+    const [registeredUsers, setRegisteredUsers] = useState([]);
     const [user, setUser] = useState(null);
 
-    const authHandler = (email) => {
-        setUser({
-            email
-        })
+
+    const registerHandler = (email, password) => {
+        if (registeredUsers.some(user => user.email === email)) {
+            throw new Error('email is taken');
+        }
+
+        setRegisteredUsers((state) => [...state, {email, password}]);
+    }
+
+    const loginHandler = (email, password) => {
+        const user = registeredUsers.find(u => u.email === email && u.password === password);
+
+        if (!user) {
+            throw new Error('No such user!');
+        }
+
+        setUser(user);
     }
 
     return (
@@ -27,8 +41,8 @@ function App() {
                 <Route path="/games" element={<Catalog />} />
                 <Route path="/games/create" element={<Create />} />
                 <Route path="/games/:gameId/details" element={<Details />} />
-                <Route path="/register" element={<Register onRegister={authHandler}/>} />
-                <Route path="/login" element={<Login onLogin={authHandler} />} />
+                <Route path="/register" element={<Register onRegister={registerHandler}/>} />
+                <Route path="/login" element={<Login onLogin={loginHandler} />} />
             </Routes>
 
             <Footer />

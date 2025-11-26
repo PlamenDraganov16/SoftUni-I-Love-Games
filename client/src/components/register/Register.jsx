@@ -6,7 +6,7 @@ export default function Register({
     const navigate = useNavigate();
 
     const registerSubmit = (formData) => {
-        
+
         const email = formData.get('email');
         const password = formData.get('password');
         const confirmPassword = formData.get('confirm-password');
@@ -21,10 +21,15 @@ export default function Register({
         }
 
         //register user
-        onRegister(email);
+        try {
+            onRegister(email, password);
 
-        //redirect to home page
-        navigate("/");
+            //redirect to home page
+            navigate("/");
+        } catch (error) {
+            alert(error.message)
+        }
+
     }
 
 
