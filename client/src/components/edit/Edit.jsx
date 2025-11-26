@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import request from "../../utils/requester.js";
 
 export default function Edit() {
     const initialValues = {
@@ -10,7 +12,8 @@ export default function Edit() {
         summary: '',
     };
 
-    const [values, setValues] = useState({ initialValues })
+    const { gameId } = useParams();
+    const [values, setValues] = useState(initialValues)
 
     const changeHandler = (e) => {
         setValues(state => ({
@@ -19,10 +22,20 @@ export default function Edit() {
         }));
     };
 
+    useEffect(() => {
+        request(`http://localhost:3030/jsonstore/games/${gameId}`)
+            .then(result => {
+                setValues(result);
+            })
+            .catch(err => {
+                alert(err.message);
+            })
+    }, [gameId])
+
     return (
         <section id="edit-page">
             <form id="add-new-game">
-                <div class="container">
+                <div className="container">
 
                     <h1>Edit Game</h1>
 
