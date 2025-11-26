@@ -19,7 +19,11 @@ function App() {
             throw new Error('email is taken');
         }
 
+        const newUser = {email, password};l
+
         setRegisteredUsers((state) => [...state, {email, password}]);
+
+        setUser(newUser);
     }
 
     const loginHandler = (email, password) => {
@@ -32,6 +36,10 @@ function App() {
         setUser(user);
     }
 
+    const logoutHandler = () => {
+        setUser(null);
+    };
+
     return (
         <>
             <Header user={user}/>
@@ -43,6 +51,7 @@ function App() {
                 <Route path="/games/:gameId/details" element={<Details />} />
                 <Route path="/register" element={<Register onRegister={registerHandler}/>} />
                 <Route path="/login" element={<Login onLogin={loginHandler} />} />
+                <Route path="/logout" element={<Login onLogout={logoutHandler} />} />
             </Routes>
 
             <Footer />
