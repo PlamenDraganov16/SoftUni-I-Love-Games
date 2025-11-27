@@ -14,13 +14,12 @@ function App() {
     const [registeredUsers, setRegisteredUsers] = useState([]);
     const [user, setUser] = useState(null);
 
-
     const registerHandler = (email, password) => {
         if (registeredUsers.some(user => user.email === email)) {
             throw new Error('email is taken');
         }
 
-        const newUser = { email, password }; l
+        const newUser = { email, password };
 
         setRegisteredUsers((state) => [...state, { email, password }]);
 
