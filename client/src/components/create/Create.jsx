@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router";
 import request from "../../utils/requester.js";
+import { useState } from "react";
 
 export default function Create() {
     const navigate = useNavigate();
+    const[imageUpload, setImageUpload] = useState(false);
 
     const createGameHandler = async (e) => {
         e.preventDefault();
@@ -14,19 +16,14 @@ export default function Create() {
         data.players = Number(data.players);
         data._createdOn = Date.now();
 
-        // const response = await fetch('http://localhost:3030/jsonstore/games', {
-        //     method: 'POST',
-        //     headers: {
-        //         'content-type' : 'application/json'
-        //     },
-        //     body: JSON.stringify(data),
-        // })
-
-        // const result = await response.json();
-
-        const result = await request('http://localhost:3030/jsonstore/games', 'POST', data);
+        await request('http://localhost:3030/jsonstore/games', 'POST', data);
 
         navigate('/games');
+    }
+
+    const imageUploadHandler = () => {
+        setImageUpload(state => !state);
+
     }
 
     return (
@@ -59,6 +56,7 @@ export default function Create() {
 
                     <div className="form-group-full">
                         <label htmlFor="imageUrl">Image URL:</label>
+                        <button type="button" className="details-button" onClick={imageUploadHandler}>Image upload</button>
                         <input type="text" id="imageUrl" name="imageUrl" placeholder="Enter image URL..." />
                     </div>
 
