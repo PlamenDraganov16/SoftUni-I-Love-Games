@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 
 export default function CreateComment({
     user,
+    onCreate,
 }) {
     const { gameId } = useParams();
     const [comment, setComment] = useState('');
@@ -12,11 +13,18 @@ export default function CreateComment({
     }
 
     const submitHandler = async () => {
-        await request('http://localhost:3030/jsonstore/comments', 'POST', {
-            author: user.email,
-            message: comment,
-            gameId,
-        })
+        try {
+            await request('http://localhost:3030/jsonstore/comments', 'POST', {
+                author: user.email,
+                message: comment,
+                gameId,
+            })
+
+            setComment('');
+            onCreate();
+        } catch (error) {
+            alert(error.message);
+        }
     }
 
     return (
@@ -30,7 +38,7 @@ export default function CreateComment({
                     onChange={changeHandler}
                     value={comment}
                 ></textarea>
-                <input className="btn submit" type="submit" value="Add Comment" disabled={!user}/>
+                <input className="btn submit" type="submit" value="Add Comment" disabled={!user} />
             </form>
         </article >
     )

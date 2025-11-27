@@ -2,9 +2,12 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 import request from "../../../utils/requester.js";
 
-export default function DetailsComments() {
+export default function DetailsComments({
+    refresh,
+}) {
     const { gameId } = useParams();
     const [comments, setComments] = useState([]);
+
     useEffect(() => {
         request(`http://localhost:3030/jsonstore/comments`)
             .then(result => {
@@ -12,7 +15,7 @@ export default function DetailsComments() {
                 setComments(gameComments);
             })
 
-    }, [gameId])
+    }, [gameId, refresh])
 
     return (
         <div className="details-comments">
