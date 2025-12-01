@@ -9,25 +9,29 @@ import Register from "./components/register/Register.jsx"
 import { useState } from "react"
 import Login from "./components/login/Login.jsx"
 import Edit from "./components/edit/Edit.jsx"
+import request from "./utils/requester.js"
 
 function App() {
-    const [registeredUsers, setRegisteredUsers] = useState([]);
     const [user, setUser] = useState(null);
 
-    const registerHandler = (email, password) => {
-        if (registeredUsers.some(user => user.email === email)) {
-            throw new Error('email is taken');
-        }
-
+    const registerHandler = async (email, password) => {
         const newUser = { email, password };
 
-        setRegisteredUsers((state) => [...state, { email, password }]);
+        const response = await fetch('http://localhost:3030/users/register', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify(newUser),
+        });
 
-        setUser(newUser);
+        const result = await response.json();
+
+        setUser(result);
     }
 
     const loginHandler = (email, password) => {
-        const user = registeredUsers.find(u => u.email === email && u.password === password);
+
 
         if (!user) {
             throw new Error('No such user!');
@@ -49,7 +53,7 @@ function App() {
                 <Route path="/games" element={<Catalog />} />
                 <Route path="/games/create" element={<Create />} />
                 <Route path="/games/:gameId/edit" element={<Edit />} />
-                <Route path="/games/:gameId/details" element={<Details user={user}/>} />
+                <Route path="/games/:gameId/details" element={<Details user={user} />} />
                 <Route path="/register" element={<Register onRegister={registerHandler} />} />
                 <Route path="/login" element={<Login onLogin={loginHandler} />} />
                 <Route path="/logout" element={<Login onLogout={logoutHandler} />} />

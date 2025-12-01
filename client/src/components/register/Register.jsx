@@ -6,7 +6,7 @@ export default function Register({
 }) {
     const navigate = useNavigate();
 
-    const registerHandler = (values) => {
+    const registerHandler = async (values) => {
 
         const {email, password, confirmPassword} = values;
         
@@ -22,7 +22,7 @@ export default function Register({
 
         //register user
         try {
-            onRegister(email, password);
+            await onRegister(email, password);
 
             //redirect to home page
             navigate("/");
@@ -33,7 +33,7 @@ export default function Register({
     }
 
     // CUSTOM HOOK
-    const {register, formAction} = useForm(registerSubmit, {
+    const {register, formAction} = useForm(registerHandler, {
         email: '',
         password: '',
         confirmPassword: '',
