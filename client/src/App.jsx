@@ -10,6 +10,7 @@ import { useState } from "react"
 import Login from "./components/login/Login.jsx"
 import Edit from "./components/edit/Edit.jsx"
 import request from "./utils/requester.js"
+import UserContext from "./contexts/UserContext.js"
 
 function App() {
     const [user, setUser] = useState(null);
@@ -44,8 +45,16 @@ function App() {
         setUser(null);
     };
 
+    const userContextValues = {
+        user,
+        isAuthenticated: !!user?.accessToken,
+        loginHandler,
+        logoutHandler,
+        registerHandler
+    }
+
     return (
-        <>
+        <UserContext.Provider value={userContextValues}>
             <Header user={user} />
 
             <Routes>
@@ -54,13 +63,13 @@ function App() {
                 <Route path="/games/create" element={<Create />} />
                 <Route path="/games/:gameId/edit" element={<Edit />} />
                 <Route path="/games/:gameId/details" element={<Details user={user} />} />
-                <Route path="/register" element={<Register onRegister={registerHandler} />} />
+                <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login onLogin={loginHandler} />} />
                 <Route path="/logout" element={<Login onLogout={logoutHandler} />} />
             </Routes>
 
             <Footer />
-        </>
+        </UserContext.Provider>
 
 
 
