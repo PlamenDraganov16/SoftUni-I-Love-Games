@@ -25,6 +25,7 @@ export default function useForm(callback, initialValues) {
     return {
         register,
         values,
+        setValues,
         changeHandler,
         formAction
     }

@@ -6,45 +6,17 @@ import Catalog from "./components/catalog/Catalog.jsx"
 import Details from "./components/details/Details.jsx"
 import Create from "./components/create/Create.jsx"
 import Register from "./components/register/Register.jsx"
-import { useState } from "react"
+import Logout from "./components/logout/Logout.jsx"
+import { useContext } from "react"
 import Login from "./components/login/Login.jsx"
 import Edit from "./components/edit/Edit.jsx"
-import UserContext from "./contexts/UserContext.js"
-import useFetch from "./hooks/useFetch.js"
+import UserContext from "./contexts/UserContext.jsx"
 
 function App() {
-    const [user, setUser] = useState(null);
-    const { request } = useFetch();
-
-    const registerHandler = async (email, password) => {
-        const newUser = { email, password };
-
-        //register api call
-        const result = await request('/users/register', 'POST', newUser);
-
-        // login user after register
-        setUser(result);
-    }
-
-    const loginHandler = async (email, password) => {
-        const result = await request('/users/login', 'POST', { email, password })
-        setUser(result);
-    }
-
-    const logoutHandler = () => {
-        setUser(null);
-    };
-
-    const userContextValues = {
-        user,
-        isAuthenticated: !!user?.accessToken,
-        loginHandler,
-        logoutHandler,
-        registerHandler
-    }
+    const { user } = useContext(UserContext);
 
     return (
-        <UserContext.Provider value={userContextValues}>
+        <>
             <Header user={user} />
 
             <Routes>
@@ -55,11 +27,11 @@ function App() {
                 <Route path="/games/:gameId/details" element={<Details user={user} />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/logout" element={<Login onLogout={logoutHandler} />} />
+                <Route path="/logout" element={<Logout onLogout={logoutHandler} />} />
             </Routes>
 
             <Footer />
-        </UserContext.Provider>
+        </>
 
 
 
