@@ -13,7 +13,7 @@ const UserContext = createContext({
     },
     loginHandler() { },
     logoutHandler() { },
-    registerHandle() { },
+    registerHandler() { },
 })
 
 export function UserProvider({

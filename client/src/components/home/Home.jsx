@@ -1,32 +1,8 @@
-import { useEffect, useState } from "react"
 import Game from "../game/game.jsx";
-import request from "../../utils/requester.js";
+import useRequest from "../../hooks/useRequest";
 
 export default function Home() {
-    const [latestGames, setLatestGames] = useState([]);
-
-    useEffect(() => {
-        // fetch('http://localhost:3030/jsonstore/games')
-        //     .then(response => response.json())
-        //     .then(result => {
-
-        //         const resultGames = Object.values(result)
-        //             .sort((a, b) => b._createdOn - a._createdOn)
-        //             .slice(0, 3);
-
-        //         setLatestGames(resultGames);
-        //     })
-        //     .catch(err => alert(err.message));
-        request('http://localhost:3030/jsonstore/games')
-            .then(result => {
-                const resultGames = Object.values(result)
-                    .sort((a, b) => b._createdOn - a._createdOn)
-                    .slice(0, 3);
-
-                setLatestGames(resultGames);
-            })
-            .catch(err => alert(err.message));
-    }, [])
+   const { data: latestGames} = useRequest(`/data/games?sortBy=_createdOn%20desc&pageSize=3`, []);
 
     return (
         <section id="welcome-world">
@@ -35,18 +11,18 @@ export default function Home() {
                 <h3>Only in </h3>
                 <img id="logo-left" src="./images/logo.png" alt="logo" />
             </div>
+
             <div id="home-page">
                 <h1>Latest Games</h1>
                 <div id="latest-wrap">
-                    {/* Display div: with information about every game (if any) */}
                     <div className="home-container">
-
                         {latestGames.length === 0 && <p className="no-articles">No games yet</p>}
 
                         {latestGames.map(game => <Game key={game._id} {...game} />)}
                     </div>
+
                 </div>
             </div>
         </section>
-    )
+    );
 }

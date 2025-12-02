@@ -1,73 +1,77 @@
 import { useNavigate } from "react-router";
-import request from "../../utils/requester.js";
-import { useState } from "react";
+import useForm from "../../hooks/useForm";
+import useRequest from "../../hooks/useRequest";
 
 export default function Create() {
     const navigate = useNavigate();
-    const[imageUpload, setImageUpload] = useState(false);
+    const { request } = useRequest();
 
-    const createGameHandler = async (e) => {
-        e.preventDefault();
-
-        const formData = new FormData(e.target);
-
-        const data = Object.fromEntries(formData);
+    const createGameHandler = async (values) => {
+        const data = values;
 
         data.players = Number(data.players);
-        data._createdOn = Date.now();
 
-        await request('http://localhost:3030/jsonstore/games', 'POST', data);
+        try {
+            await request('/data/games', 'POST', data);
 
-        navigate('/games');
+            navigate('/games');
+        } catch (err) {
+            alert(err.message)
+        }
     }
 
-    const imageUploadHandler = () => {
-        setImageUpload(state => !state);
-
-    }
+    const {
+        register,
+        formAction,
+    } = useForm(createGameHandler, {
+        title: '',
+        genre: '',
+        players: '',
+        date: '',
+        imageUrl: '',
+        summary: '',
+    });
 
     return (
-        // <!-- add Page ( Only for logged-in users ) -->
         <section id="add-page">
-            <form id="add-new-game" onSubmit={createGameHandler}>
+            <form id="add-new-game" action={formAction}>
                 <div className="container">
 
                     <h1>Add New Game</h1>
 
                     <div className="form-group-half">
                         <label htmlFor="gameName">Game Name:</label>
-                        <input type="text" id="gameName" name="title" placeholder="Enter game title..." />
+                        <input type="text" id="gameName" {...register('title')} placeholder="Enter game title..." />
                     </div>
 
                     <div className="form-group-half">
                         <label htmlFor="genre">Genre:</label>
-                        <input type="text" id="genre" name="genre" placeholder="Enter game genre..." />
+                        <input type="text" id="genre" {...register('genre')} placeholder="Enter game genre..." />
                     </div>
 
                     <div className="form-group-half">
                         <label htmlFor="activePlayers">Active Players:</label>
-                        <input type="number" id="activePlayers" name="players" min="0" placeholder="0" />
+                        <input type="number" id="activePlayers" {...register('players')} min="0" placeholder="0" />
                     </div>
 
                     <div className="form-group-half">
                         <label htmlFor="releaseDate">Release Date:</label>
-                        <input type="date" id="releaseDate" name="date" />
+                        <input type="date" id="releaseDate" {...register('date')} />
                     </div>
 
                     <div className="form-group-full">
-                        <label htmlFor="imageUrl">Image URL:</label>
-                        <button type="button" className="details-button" onClick={imageUploadHandler}>Image upload</button>
-                        <input type="text" id="imageUrl" name="imageUrl" placeholder="Enter image URL..." />
+                        <label htmlFor="image">Image Url:</label>
+                        <input type="text" id="image" {...register('imageUrl')} placeholder="Enter image URL..." />
                     </div>
 
                     <div className="form-group-full">
                         <label htmlFor="summary">Summary:</label>
-                        <textarea name="summary" id="summary" rows="5" placeholder="Write a brief summary..."></textarea>
+                        <textarea {...register('summary')} id="summary" rows="5" placeholder="Write a brief summary..."></textarea>
                     </div>
 
                     <input className="btn submit" type="submit" value="ADD GAME" />
                 </div>
             </form>
         </section>
-    )
+    );
 }

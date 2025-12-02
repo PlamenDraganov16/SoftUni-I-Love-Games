@@ -1,51 +1,51 @@
-import { useEffect, useState } from "react";
+import { useEffect, } from "react";
 import { useNavigate, useParams } from "react-router";
-import request from "../../utils/requester.js";
+import useForm from "../../hooks/useForm.js";
+import useRequest from "../../hooks/useRequest.js";
 
 export default function Edit() {
-    const initialValues = {
+    const editGameHandler = async (values) => {
+        try {
+            await request(`/data/games/${gameId}`, 'PUT', values);
+
+            navigate(`/games/${gameId}/details`);
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+
+    const {
+        register,
+        formAction,
+        setValues,
+    } = useForm(editGameHandler, {
         title: '',
         genre: '',
         players: '',
         date: '',
         imageUrl: '',
         summary: '',
-    };
+    });
 
-    const { gameId } = useParams();
-    const [values, setValues] = useState(initialValues)
+
     const navigate = useNavigate();
-
-    const changeHandler = (e) => {
-        setValues(state => ({
-            ...state,
-            [e.target.name]: e.target.value,
-        }));
-    };
+    const { gameId } = useParams();
+    const { request } = useRequest();
 
     useEffect(() => {
-        request(`http://localhost:3030/jsonstore/games/${gameId}`)
+        request(`/data/games/${gameId}`)
             .then(result => {
                 setValues(result);
             })
             .catch(err => {
                 alert(err.message);
             })
-    }, [gameId]);
+    }, [gameId, setValues]);
 
-    const editGameHandler = async () => {
-        try {
-            await request(`http://localhost:3030/jsonstore/games/${gameId}`, 'PUT', values);
-
-            navigate(`/games/${gameId}/details`);
-        } catch (error) {
-            alert(error.message)
-        }
-    }
 
     return (
         <section id="edit-page">
-            <form id="add-new-game" action={editGameHandler}>
+            <form id="add-new-game" action={formAction}>
                 <div className="container">
 
                     <h1>Edit Game</h1>
@@ -55,10 +55,8 @@ export default function Edit() {
                         <input
                             type="text"
                             id="gameName"
-                            name="title"
-                            placeholder="Enter game title..."
-                            onChange={changeHandler}
-                            value={values.title}
+                            {...register('title')}
+                            placeholder="Entergame title..."
                         />
                     </div>
 
@@ -67,10 +65,8 @@ export default function Edit() {
                         <input
                             type="text"
                             id="genre"
-                            name="genre"
+                            {...register('genre')}
                             placeholder="Enter game genre..."
-                            onChange={changeHandler}
-                            value={values.genre}
                         />
                     </div>
 
@@ -79,11 +75,9 @@ export default function Edit() {
                         <input
                             type="number"
                             id="activePlayers"
-                            name="players"
+                            {...register('players')}
                             min="0"
                             placeholder="0"
-                            onChange={changeHandler}
-                            value={values.players}
                         />
                     </div>
 
@@ -92,9 +86,7 @@ export default function Edit() {
                         <input
                             type="date"
                             id="releaseDate"
-                            name="date"
-                            onChange={changeHandler}
-                            value={values.date}
+                            {...register('date')}
                         />
                     </div>
 
@@ -103,22 +95,18 @@ export default function Edit() {
                         <input
                             type="text"
                             id="imageUrl"
-                            name="imageUrl"
+                            {...register('imageUrl')}
                             placeholder="Enter image URL..."
-                            onChange={changeHandler}
-                            value={values.imageUrl}
                         />
                     </div>
 
                     <div className="form-group-full">
                         <label htmlFor="summary">Summary:</label>
                         <textarea
-                            name="summary"
                             id="summary"
+                            {...register('summary')}
                             rows="5"
                             placeholder="Write a brief summary..."
-                            onChange={changeHandler}
-                            value={values.summary}
                         ></textarea>
                     </div>
 
@@ -126,5 +114,6 @@ export default function Edit() {
                 </div>
             </form>
         </section>
-    )
+
+    );
 }

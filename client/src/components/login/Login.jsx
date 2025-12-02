@@ -5,7 +5,7 @@ import UserContext from "../../contexts/UserContext.jsx";
 
 export default function Login() {
     const navigate = useNavigate();
-    const {loginHandler} = useContext(UserContext);
+    const { loginHandler } = useContext(UserContext);
 
     const submitHandler = async ({ email, password }) => {
 
@@ -15,6 +15,7 @@ export default function Login() {
 
         try {
             await loginHandler(email, password)
+
             navigate('/');
         } catch (error) {
             alert(error.message)

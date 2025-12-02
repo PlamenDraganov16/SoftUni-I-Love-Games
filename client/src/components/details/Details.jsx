@@ -1,39 +1,32 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import CreateComment from "./create-comment/CreateComment.jsx";
 import DetailsComments from "./details-comment/DetailsComment.jsx";
+import useRequest from "../../hooks/useRequest.js";
+import { useUserContext } from "../../contexts/UserContext.jsx";
 
-export default function Details({
-    user,
-}) {
-    const { gameId } = useParams();
+export default function Details() {
+    const { user, isAuthenticated } = useUserContext();
     const navigate = useNavigate();
-    const [game, setGame] = useState({});
+    const { gameId } = useParams();
     const [refresh, setRefresh] = useState(false);
-    
-
-    useEffect(() => {
-        fetch(`http://localhost:3030/jsonstore/games/${gameId}`)
-            .then(response => response.json())
-            .then(result => setGame(result))
-            .catch(err => alert(err.message));
-    }, [gameId])
+    const { data: game, request } = useRequest(`/data/games/${gameId}`, {})
 
     const deleteGameHandler = async () => {
-        const isConfirmed = confirm(`Are you sure you want to delete game: ${game.title}`)
+        const isConfirmed = confirm(`Are you sure you want to delete game: ${game.title}`);
 
-        if (!isConfirmed) return;
+        if (!isConfirmed) {
+            return;
+        }
 
         try {
-            await fetch(`http://localhost:3030/jsonstore/games/${gameId}`, {
-                method: 'DELETE',
-            });
+            await request(`/data/games/${gameId}`, 'DELETE');
 
-            navigate('/');
+            navigate('/games');
         } catch (err) {
-            alert(err.message);
+            alert('Unable to delete game: ', err.message);
         }
-    }
+    };
 
     const refreshHandler = () => {
         setRefresh(state => !state);
@@ -45,7 +38,7 @@ export default function Details({
             <div className="info-section">
 
                 <div className="header-and-image">
-                    <img className="game-img" src={game.imageUrl} alt="Elden Ring Cover Art" />
+                    <img className="game-img" src={game.imageUrl} alt={game.title} />
 
                     <div className="meta-info">
                         <h1 className="game-name">{game.title}</h1>
@@ -67,9 +60,7 @@ export default function Details({
                     </div>
                     <div className="summary-section">
                         <h2>Summary:</h2>
-                        <p className="text-summary">
-                            {game.summary}
-                        </p>
+                        <p className="text-summary">{game.summary}</p>
                     </div>
                 </div>
 
@@ -77,15 +68,13 @@ export default function Details({
                 {/* <!-- Edit/Delete buttons ( Only for creator of this game )  --> */}
                 <div className="buttons">
                     <Link to={`/games/${gameId}/edit`} className="button">Edit</Link>
-                    {/* <Link to={`/games/${gameId}/delete`} className="button">Delete</Link> */}
                     <button className="button" onClick={deleteGameHandler}>Delete</button>
                 </div>
 
-                <DetailsComments refresh={refresh}/>
-
+                <DetailsComments refresh={refresh} />
             </div>
-            {/* <!-- Add Comment ( Only for logged-in users, which is not creators of the current game ) --> */}
-            {user && <CreateComment user={user} onCreate={refreshHandler}/>}
+
+            {isAuthenticated && <CreateComment user={user} onCreate={refreshHandler} />}
         </section>
     );
 }

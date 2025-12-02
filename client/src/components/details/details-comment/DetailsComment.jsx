@@ -1,21 +1,16 @@
-import { useEffect, useState } from "react"
-import { useParams } from "react-router"
-import request from "../../../utils/requester.js";
+import { useParams } from "react-router";
+import useRequest from "../../../hooks/useRequest.js";
 
-export default function DetailsComments({
-    refresh,
-}) {
+export default function DetailsComments() {
     const { gameId } = useParams();
-    const [comments, setComments] = useState([]);
 
-    useEffect(() => {
-        request(`http://localhost:3030/jsonstore/comments`)
-            .then(result => {
-                const gameComments = Object.values(result).filter(comment => comment.gameId === gameId);
-                setComments(gameComments);
-            })
+    const urlParams = new URLSearchParams({
+        where: `gameId="${gameId}"`,
+        load: 'author=_ownerId:users'
+    });
 
-    }, [gameId, refresh])
+    // TODO Fix refresh on cmoment bug
+    const { data: comments } = useRequest(`/data/comments?${urlParams.toString()}`, []);
 
     return (
         <div className="details-comments">
@@ -23,7 +18,7 @@ export default function DetailsComments({
             <ul>
                 {comments.map(comment => (
                     <li key={comment._id} className="comment">
-                        <p>{comment.author} : {comment.message}</p>
+                        <p>{comment.author?.email}: {comment.message}</p>
                     </li>
                 ))}
             </ul>
@@ -32,5 +27,5 @@ export default function DetailsComments({
                 <p className="no-comment">No comments.</p>
             )}
         </div>
-    )
+    );
 }

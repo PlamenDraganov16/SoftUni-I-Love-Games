@@ -5,12 +5,12 @@ import UserContext from "../../contexts/UserContext.jsx";
 
 export default function Register() {
     const navigate = useNavigate();
-    const {registerHandler} = useContext(UserContext);
+    const { registerHandler } = useContext(UserContext);
 
     const registerSubmitHandler = async (values) => {
 
-        const {email, password, confirmPassword} = values;
-        
+        const { email, password, confirmPassword } = values;
+
 
         //validation
         if (!email || !password) {
@@ -34,7 +34,7 @@ export default function Register() {
     }
 
     // CUSTOM HOOK
-    const {register, formAction} = useForm(registerSubmitHandler, {
+    const { register, formAction } = useForm(registerSubmitHandler, {
         email: '',
         password: '',
         confirmPassword: '',
@@ -54,7 +54,7 @@ export default function Register() {
                     <input type="password" id="register-password" {...register('password')} placeholder="Password" />
 
                     <label htmlFor="con-pass">Confirm Password:</label>
-                    <input type="password" id="confirm-password" {...register('confirmPassword')}  placeholder="Repeat Password" />
+                    <input type="password" id="confirm-password" {...register('confirmPassword')} placeholder="Repeat Password" />
 
                     <input className="btn submit" type="submit" value="Register" />
 
